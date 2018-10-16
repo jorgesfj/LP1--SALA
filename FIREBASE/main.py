@@ -5,10 +5,21 @@ from firebase_admin import firestore
 cred = credentials.Certificate('p1lp1-e4bc1-firebase-adminsdk-xa5b0-fa875ede5b.json')
 firebase_admin.initialize_app(cred)
 db = firestore.client()
+def delete(codigo):
+	global db
+	db.collection(u'biblioteca').document(codigo).delete()
+	print("REMOVIDO COM SUCESSO!!!")
+
 def create(code,dicionario):
-	global gb
+	global db
 	db.collection(u'biblioteca').document(code).set(dicionario)
 	print("CADASTRADO COM SUCESSO!!!\n")
+
+def atualizar(codigo,dicionario):
+	global db
+	db.collection(u'biblioteca').document(codigo).update(dicionario)
+	print("MUDANÇAS CADASTRADAS!!!")
+
 def ler(codigo):
 	global db
 	livro_referencia = db.collection(u'biblioteca')
@@ -36,7 +47,7 @@ def menu():
 		print("digite o título do livro")
 		dicionario["nome"] = input()
 
-		print("digite um codigo para o livro")
+		print("digite um código para o livro")
 		code = input()
 		dicionario["codigo"] = code
 
@@ -49,5 +60,25 @@ def menu():
 		print("Informe o código do livro, ou 'TODOS' para se informar de todos os livros disponíveis.")
 		codigo = input()
 		ler(codigo)
+
+	if (opcao==3):
+		dicionario = {}
+		print("Código do livro a ser Editado")
+		codigo=input()
+		print("Novo nome")
+		aux = input()
+		if(aux!=''):
+			dicionario["nome"]=aux
+		print("Novo preco")
+		aux = input()
+		if(aux!=''):
+			dicionario["preco"]=float(aux)
+		atualizar(codigo,dicionario)
+
+	if (opcao==4):
+		print("Código do livro a ser removido")
+		codigo = input()
+		delete(codigo)
+
 while True:
 	menu()
